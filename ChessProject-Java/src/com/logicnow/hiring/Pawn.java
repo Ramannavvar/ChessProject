@@ -1,6 +1,6 @@
 package com.logicnow.hiring;
 
-public class Pawn {
+public class Pawn implements IPiece {
 
     private ChessBoard chessBoard;
     private int xCoordinate;
@@ -35,6 +35,7 @@ public class Pawn {
         this.yCoordinate = value;
     }
 
+    @Override
     public PieceColor getPieceColor() {
         return this.pieceColor;
     }
@@ -44,7 +45,20 @@ public class Pawn {
     }
 
     public void Move(MovementType movementType, int newX, int newY) {
-        throw new UnsupportedOperationException("Need to implement Pawn.Move()") ;
+    	if(movementType.equals(MovementType.MOVE)) {
+    		if(isLegalMove(newX, newY)) {
+    			this.xCoordinate = newX;
+    			this.yCoordinate = newY;
+    			chessBoard.setPieceAtBoardPosition(newX, newY, this);
+    		}
+    	} 
+    	if(movementType.equals(MovementType.CAPTURE)) {
+    		if(isLegalCapture(newX, newY)) {
+    			this.xCoordinate = newX;
+    			this.yCoordinate = newY;
+    			chessBoard.setPieceAtBoardPosition(newX, newY, this);
+    		}
+    	}        
     }
 
     @Override
@@ -55,5 +69,55 @@ public class Pawn {
     protected String CurrentPositionAsString() {
         String eol = System.lineSeparator();
         return String.format("Current X: {1}{0}Current Y: {2}{0}Piece Color: {3}", eol, xCoordinate, yCoordinate, pieceColor);
+    }	
+    
+    private boolean isLegalMove(int newX, int newY) {
+    	if (chessBoard.isBoardPositionFree(newX, newY)) {
+    		if (yCoordinate == newY) {
+    			if (pieceColor == PieceColor.BLACK) {
+					if (xCoordinate == 6 && (newX == xCoordinate - 1 || newX == xCoordinate - 2)){
+						return true;    		
+			    	}
+					if (newX == xCoordinate - 1) {
+						return true;
+					}
+    			}
+    			if (pieceColor == PieceColor.WHITE) {
+					if (xCoordinate == 1 && (newX == yCoordinate + 1 && newX == yCoordinate + 2)) {
+						return true;
+					}
+					if (newX == xCoordinate + 1) {
+						return true;
+					}
+    			}
+    		} 
+    		return false;
+    	}
+    	return false;
     }
+    
+    private boolean isLegalCapture(int newX, int newY) {
+		IPiece piece = chessBoard.getPieceAtBoardPostion(newX, newY);
+		if (piece != null) {
+			if (pieceColor == PieceColor.BLACK) {
+				if (newY == (yCoordinate - 1)) {
+					if (piece.getPieceColor() != pieceColor) {
+						return true;
+					}
+					//return false;
+				}			
+			}
+			
+			if (pieceColor == PieceColor.WHITE) {
+				if (newY == (yCoordinate + 1)) {
+					if (piece.getPieceColor() != pieceColor) {
+						return true;
+					}
+					//return false;
+				}
+			}
+		}
+		return false;
+	}
 }
+

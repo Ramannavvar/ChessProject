@@ -18,13 +18,13 @@ public class ChessBoardTest extends TestCase {
     }
 
     @Test
-    public void testHas_MaxBoardWidth_of_7() {
-        assertEquals(7, ChessBoard.MAX_BOARD_HEIGHT);
+    public void testHas_MaxBoardWidth_of_8() {
+        assertEquals(8, ChessBoard.MAX_BOARD_HEIGHT);
     }
 
     @Test
-    public void testHas_MaxBoardHeight_of_7() {
-        assertEquals(7, ChessBoard.MAX_BOARD_HEIGHT);
+    public void testHas_MaxBoardHeight_of_8() {
+        assertEquals(8, ChessBoard.MAX_BOARD_HEIGHT);
     }
 
     @Test
@@ -42,7 +42,8 @@ public class ChessBoardTest extends TestCase {
     @Test
     public void testIsLegalBoardPosition_False_X_equals_11_Y_equals_5() {
         boolean isValidPosition = testSubject.IsLegalBoardPosition(11, 5);
-        assertTrue(isValidPosition);
+        // 11, 5 positions are illegal on the board - changing the assert here from assertTrue to assertFalse
+        assertFalse(isValidPosition);
     }
 
     @Test
@@ -94,5 +95,35 @@ public class ChessBoardTest extends TestCase {
                 Assert.assertEquals(-1, pawn.getYCoordinate());
             }
         }
+    }
+    
+    @Test
+    public void testIsBoardPositionFree_FALSE() {
+    	Pawn pawn = new Pawn(PieceColor.BLACK);
+    	testSubject.Add(pawn, 6, 3, PieceColor.BLACK);
+    	boolean isFree = testSubject.isBoardPositionFree(6, 3);
+    	assertFalse(isFree);
+    }
+ 
+    @Test
+    public void testIsBoardPositionFree_TRUE() {    	
+    	boolean isFree = testSubject.isBoardPositionFree(6, 3);
+    	assertTrue(isFree);
+    }
+ 
+    @Test
+    public void testGetPieceAtBoardPostion_TRUE() {
+    	Pawn pawn = new Pawn(PieceColor.BLACK);
+    	testSubject.Add(pawn, 6, 3, PieceColor.BLACK);
+    	IPiece test = testSubject.getPieceAtBoardPostion(6, 3);    	
+    	assertEquals(true, pawn.equals(test));    	
+    }
+    
+    @Test
+    public void testGetPieceAtBoardPostion_FALSE() {
+    	Pawn pawn = new Pawn(PieceColor.BLACK);
+    	testSubject.Add(pawn, 6, 0, PieceColor.BLACK);
+    	IPiece test = testSubject.getPieceAtBoardPostion(6, 3);    	
+    	assertEquals(false, pawn.equals(test));    	
     }
 }
